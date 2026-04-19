@@ -11,7 +11,7 @@ import org.junit.Test;
  *
  * Creación colectiva - Proyecto: stackingItems - Ciclo 4
  */
-public class TowerCC4test
+public class TowerCC4Test
 {
     private Tower tower;
 
@@ -22,9 +22,6 @@ public class TowerCC4test
         tower.setVisibleForTest(false);
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    //  Interacción OpenerCup con tapas existentes
-    // ═══════════════════════════════════════════════════════════════
 
     @Test
     public void accordingCC4Should01OpenerEntersEmptyTowerOk()
@@ -41,7 +38,6 @@ public class TowerCC4test
         tower.pushLid("normal", 4, "red");
         tower.pushCup("opener", 2);
         assertTrue(tower.ok());
-        // Taza 4 ya no debe tener tapa
         int[] lided = tower.lidedCups();
         for (int n : lided) assertNotEquals(4, n);
     }
@@ -49,7 +45,7 @@ public class TowerCC4test
     @Test
     public void accordingCC4Should03OpenerWithNoLidOnTopOk()
     {
-        // No hay tapa en el tope: opener entra sin problema
+        
         tower.pushCup("normal", 4);
         tower.pushCup("opener", 2);
         assertTrue(tower.ok());
@@ -65,21 +61,16 @@ public class TowerCC4test
         tower.pushLid("normal", 3, "green");
         tower.pushCup("opener", 1);
         assertTrue(tower.ok());
-        // Taza 3 ya no debe tener tapa
         int[] lided = tower.lidedCups();
         for (int n : lided) assertNotEquals(3, n);
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    //  Interacción HierarchicalCup con la torre
-    // ═══════════════════════════════════════════════════════════════
 
     @Test
     public void accordingCC4Should05HierarchicalInEmptyTowerReachesBottom()
     {
         tower.pushCup("hierarchical", 4);
         assertTrue(tower.ok());
-        // Llegó al fondo → no puede quitarse
         tower.popCup();
         assertFalse(tower.ok());
     }
@@ -87,16 +78,13 @@ public class TowerCC4test
     @Test
     public void accordingCC4Should06HierarchicalAboveAllStaysOnTop()
     {
-        // Torre con tazas 1,2,3 → hierarchical 5 llega al fondo
         tower.pushCup("normal", 1);
         tower.pushCup("normal", 2);
         tower.pushCup("normal", 3);
         tower.pushCup("hierarchical", 5);
         assertTrue(tower.ok());
-        // Debe estar en posición base (fondo)
-        tower.popCup(); // quitar taza 3 del tope
+        tower.popCup(); 
         assertTrue(tower.ok());
-        // hierarchical 5 está bloqueada en el fondo, no se puede quitar
         tower.removeCup(5);
         assertFalse(tower.ok());
     }
@@ -112,16 +100,13 @@ public class TowerCC4test
         assertTrue(tower.ok());
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    //  Interacción FearfulLid
-    // ═══════════════════════════════════════════════════════════════
+
 
     @Test
     public void accordingCC4Should10FearfulEntersWhenCompanionPresent()
     {
         tower.pushCup("normal", 3);
-        tower.pushCup("normal", 5); // companion presente
-        // FearfulLid sobre taza 3, companion=5
+        tower.pushCup("normal", 5);
         FearfulLid fl = new FearfulLid("green", 5);
         assertTrue(fl.canPush(tower, 3));
     }
@@ -131,7 +116,6 @@ public class TowerCC4test
     {
         tower.pushCup("normal", 3);
         FearfulLid fl = new FearfulLid("green", 3);
-        // Está tapando a su compañera (cup=3) → no puede salir
         assertFalse(fl.canPop(tower, 3));
     }
 
@@ -141,13 +125,9 @@ public class TowerCC4test
         tower.pushCup("normal", 3);
         tower.pushCup("normal", 2);
         FearfulLid fl = new FearfulLid("green", 3);
-        // Está sobre taza 2, compañera es 3 → puede salir
         assertTrue(fl.canPop(tower, 2));
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    //  Interacción CrazyLid
-    // ═══════════════════════════════════════════════════════════════
 
     @Test
     public void accordingCC4Should13CrazyGoesToBaseNotTarget()
@@ -157,7 +137,6 @@ public class TowerCC4test
         tower.pushLid("crazy", 2, "magenta");
         assertTrue(tower.ok());
         int[] lided = tower.lidedCups();
-        // La base (taza 5) debe tener la tapa, no la taza 2
         boolean baseHasLid = false;
         for (int n : lided) if (n == 5) baseHasLid = true;
         assertTrue(baseHasLid);
@@ -168,26 +147,20 @@ public class TowerCC4test
     {
         tower.pushCup("normal", 4);
         tower.pushCup("normal", 2);
-        tower.pushLid("normal", 4, "red"); // tapa previa en base
-        tower.pushLid("crazy", 2, "magenta"); // crazy la sobreescribe
+        tower.pushLid("normal", 4, "red"); 
+        tower.pushLid("crazy", 2, "magenta"); 
         assertTrue(tower.ok());
-        // La base debe tener la tapa crazy (magenta)
         String[][] items = tower.stackingItems();
         assertEquals("magenta", items[0][1]);
     }
-
-    // ═══════════════════════════════════════════════════════════════
-    //  Interacción TimedLid
-    // ═══════════════════════════════════════════════════════════════
 
     @Test
     public void accordingCC4Should15TimedLidPresentAfterFewOps()
     {
         tower.pushCup("normal", 3);
         tower.pushCup("normal", 2);
-        tower.pushLid("timed", 3, "orange"); // maxOps=3
+        tower.pushLid("timed", 3, "orange"); 
         assertTrue(tower.ok());
-        // Solo 1 operación → tapa sigue presente
         tower.pushLid("normal", 2, "blue");
         int[] lided = tower.lidedCups();
         boolean timedPresent = false;
@@ -200,11 +173,10 @@ public class TowerCC4test
     {
         tower.pushCup("normal", 3);
         tower.pushCup("normal", 2);
-        tower.pushLid("timed", 3, "orange"); // maxOps=3
-        // 3 operaciones para que expire
-        tower.pushLid("normal", 2, "blue");  // op 1
-        tower.popLid(2);                      // op 2
-        tower.pushLid("normal", 2, "red");   // op 3 → expira
+        tower.pushLid("timed", 3, "orange"); 
+        tower.pushLid("normal", 2, "blue"); 
+        tower.popLid(2);                      
+        tower.pushLid("normal", 2, "red");   
         int[] lided = tower.lidedCups();
         boolean timedGone = true;
         for (int n : lided) if (n == 3) timedGone = false;
@@ -218,10 +190,6 @@ public class TowerCC4test
         assertEquals(4, tl.getRemainingOperations());
         assertFalse(tl.isExpired());
     }
-
-    // ═══════════════════════════════════════════════════════════════
-    //  Integración general: mezcla de tipos
-    // ═══════════════════════════════════════════════════════════════
 
     @Test
     public void accordingCC4Should18MixedCupsInTower()
@@ -241,7 +209,7 @@ public class TowerCC4test
         tower.pushCup("normal", 1);
         tower.pushLid("normal", 1, "red");
         tower.pushLid("timed", 3, "orange");
-        tower.pushLid("crazy", 1, "magenta"); // va a base (taza 5)
+        tower.pushLid("crazy", 1, "magenta"); 
         assertTrue(tower.ok());
         int[] lided = tower.lidedCups();
         assertTrue(lided.length >= 2);

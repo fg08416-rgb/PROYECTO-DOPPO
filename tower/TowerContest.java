@@ -72,7 +72,7 @@ public class TowerContest
         
         List<Long> cupOrder = buildOrder(n, heights, h);
 
-        if (cupOrder == null) { ok = false; return "impossible"; }
+        if (cupOrder.isEmpty()) { ok = false; return "impossible"; }
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < cupOrder.size(); i++) {
@@ -136,7 +136,7 @@ public class TowerContest
             }
         }
 
-        return null; 
+        return Collections.emptyList();
     }
 
     /** Calcula la altura acumulada de una secuencia de alturas en cm. */
